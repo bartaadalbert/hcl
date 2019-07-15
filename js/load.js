@@ -3,13 +3,15 @@ var uri = window.location.href;
 var targ;
 var enableFixedMenu = false;
 var mobile_width = 800;
-var progressBar;
+var progressBar = $('#progressBar');
 var spareTimeOut;
 var firstLoad = true;
-checkUri();
-function load(page,option) {
+
+var $hcl = {};
+
+$hcl.load = function load(page,option) {
     $('.menu_container').find('.selected').removeClass('selected');
-    $('.menu_container').find('a[href=#'+page+']').addClass('selected');
+    $('.menu_container').find('a[href="#'+page+'"]').addClass('selected');
     $('.one_menu_current').removeClass('one_menu_current');
     current_page = page;
     $.ajax({
@@ -17,7 +19,7 @@ function load(page,option) {
         url: "/actions",
         data: {load:"1",page:page,option:option},
         beforeSend: function(){
-            startProgress();
+            $hcl.startProgress();
         },
         success: function(data){
             $('#main_content').html(data);
@@ -25,36 +27,36 @@ function load(page,option) {
     });
 }
 
-function startProgress() {
-    showLoader();
+$hcl.startProgress = function startProgress() {
+    $hcl.showLoader();
     if (firstLoad){
         setTimeout(function () {
-            setProgress(30);
+            $hcl.setProgress(30);
         },10);
-        spareTimeOut = setTimeout(finishProgress,10000);
+        spareTimeOut = setTimeout($hcl.finishProgress,10000);
     } else {
         progressBar.addClass('blemp');
-        spareTimeOut = setTimeout(finishProgress,6000);
+        spareTimeOut = setTimeout($hcl.finishProgress,6000);
     }
 }
 
-function finishProgress() {
+$hcl.finishProgress = function finishProgress() {
     clearTimeout(spareTimeOut);
     $('.blemp').removeClass('blemp');
     progressBar.addClass('ready');
     getScriptForCurrentPage();
-    onPageLoad();
-    showContent();
-    selMenuIt(current_page);
+    $hcl.onPageLoad();
+    $hcl.showContent();
+    $hcl.selMenuIt(current_page);
     if (firstLoad){
-        setTimeout(setProgress(100),200);
+        setTimeout($hcl.setProgress(100),200);
     }
     setTimeout(function () {
-      clearProgress();
+        $hcl.clearProgress();
     },1000);
 }
 
-function onPageLoad() {
+$hcl.onPageLoad = function onPageLoad() {
     var action;
     $('.order_btn').click(function () {
         action = $(this).attr('href').replace(/#/g, "");
@@ -63,9 +65,9 @@ function onPageLoad() {
         if (action=='order_form'){
             formActionSpan = '';
             formActionSpan = $(this).parents('.create_web').find('.descr_name').html();
-            showOrderForm();
+            // showOrderForm();
         } else {
-            load(action);
+            $hcl.load(action);
         }
     });
     $(window).off('scroll');
@@ -73,10 +75,10 @@ function onPageLoad() {
 }
 
 //Current page menu identy
-function selMenuIt(myPage) {
+$hcl.selMenuIt = function selMenuIt(myPage) {
     $('.selected').removeClass('selected');
-    $('.menu_container').find('a[href=#'+ myPage +']').addClass('selected');
-    $('.mobile_menu').find('a[href=#'+ myPage +']').addClass('selected');
+    $('.menu_container').find('a[href="#'+ myPage +'"]').addClass('selected');
+    $('.mobile_menu').find('a[href="#'+ myPage +'"]').addClass('selected');
     if (window.location.href.length>19){
         if (uri.indexOf('?_escaped_fragment_=')==-1){
             // window.location.href = "/#!"+myPage;
@@ -85,9 +87,9 @@ function selMenuIt(myPage) {
 }
 
 //check if reload page
-function checkUri() {
+$hcl.checkUri = function checkUri() {
     current_page = uri.slice(19,uri.length);
-    if (uri.indexOf("#")==-1 && $('.menu_container').find('a[href=#'+current_page+']').length!=0) {
+    if (current_page != '' && uri.indexOf("#")==-1 && $('.menu_container').find('a[href="#'+current_page+'"]').length!=0) {
 
     } else if (uri.indexOf("#")!=-1){
         if (uri.indexOf('!')!=-1){
@@ -112,13 +114,13 @@ function checkUri() {
 
 
 //start loader
-function showLoader() {
+$hcl.showLoader = function showLoader() {
     $('.main_content').hide();
     $('#loader').show();
 }
 
 //end loader
-function showContent() {
+$hcl.showContent = function showContent() {
     $('.mobile_menu').css('transition','none');
     $('.main_content').show();
     $('#loader').hide();
@@ -127,11 +129,11 @@ function showContent() {
     },100);
 }
 
-function setProgress(pers) {
+$hcl.setProgress = function setProgress(pers) {
     progressBar.css('width',pers+'%');
 }
 
-function clearProgress() {
+$hcl.clearProgress = function clearProgress() {
     progressBar.css('width','');
     progressBar.removeClass('blemp').removeClass('ready');
 }

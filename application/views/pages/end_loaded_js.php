@@ -1,6 +1,6 @@
-<script async>
+<script>
     $(function () {
-        finishProgress();
+        $hcl.finishProgress();
         if (firstLoad){
             firstLoad = false;
         }
@@ -8,10 +8,10 @@
         var myPage = "<?php echo $page; ?>";
         //var robot = "<?php //echo $robot; ?>//";
         $('.selected').removeClass('selected');
-        $('.menu_container').find('a[href=#'+ myPage +']').addClass('selected');
-        $('.mobile_menu').find('a[href=#'+ myPage +']').addClass('selected');
+        $('.menu_container').find('a[href="#'+ myPage +'"]').addClass('selected');
+        $('.mobile_menu').find('a[href="#'+ myPage +'"]').addClass('selected');
         if (myPage=="main" && current_page!="main" && current_page!=myPage && robot==''){
-            load(current_page);
+            $hcl.load(current_page);
         }
     });
 </script>
