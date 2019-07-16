@@ -137,3 +137,20 @@ $hcl.clearProgress = function clearProgress() {
     progressBar.css('width','');
     progressBar.removeClass('blemp').removeClass('ready');
 }
+
+$hcl.init_swal = function init_swal(resp) {
+    if (resp.status && resp.title && resp.type_alert=='swal'){
+        Swal({
+            "title": resp.title,
+            "text": resp.comment,
+            "type": resp.status,
+            // "timer": 1000
+        });
+    }
+}
+
+$hcl.init_resp = function init_resp(data) {
+    var resp = JSON.parse(data);
+    $hcl.init_swal(resp);
+    return resp;
+}
